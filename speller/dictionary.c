@@ -1,6 +1,8 @@
 // Implements a dictionary's functionality
 
+#include <ctype.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "dictionary.h"
@@ -19,6 +21,8 @@ bool check(const char *word)
 // Loads dictionary into memory, returning true if successful else false
 bool load(const char *dictionary)
 {
+    // strategy: use a trie
+
     // create a reference to the dictionary file
     FILE *file = fopen(dictionary, "r");
 
@@ -35,49 +39,60 @@ bool load(const char *dictionary)
     // }
 
     // printf("the dictionary is %s xxx\n", dictionary);
+    // temporary counter for dictionary words
     int counter = 0;
 
     // create an array to hold the longest word
     char str[45];
 
-    // typedef struct node
-    // {
-    //     bool is_word;
-    //     struct node *children[27];
-    // }
-    // node;
+    typedef struct node
+    {
+        bool is_word;
+        struct node *children[27];
+    }
+    node;
 
     // create the root node
-    //node *root;
+    struct node *root = malloc(sizeof(node));
 
+    // create a navigation pointer to remember the location of root as we iterate through the trie
+    // struct node *nav = root;
 
     // read dictionary file until the end is reached
     while (fgets (str, 45, file) != NULL )
     {
         counter++;
-        for (int i = 0; i < strlen(str); i++)
+
+        for (int i = 0, len = strlen(str); i < len; i++)
         {
-            printf("%c", str[i]);
+            if (isalpha(str[i]) != 0)
+            {
+                if (root->children[str[i] - 'a'] == NULL)
+                {
+                    struct node *child = malloc(sizeof(node));
+                    root->children[str[i] - 'a'] = child;
+
+                }
+
+            }
+            else // character is apostrophe
+            {
+                if (root->children[26] == NULL)
+                {
+                    struct node *child = malloc(sizeof(node));
+                    root->children[26] = child;
+                    // child->children[26];
+                }
+            }
         }
 
+        // set boolean to true for end of word
 
     }
     // print counter for testing
     printf("counter: %i\n", counter);
 
-
-    // TODO
-
-
-    char *word = "";
-    printf("%s", word);
-
-    // while (fscanf(file, "%s", word) != EOF)
-    // {
-    //     counter++;
-    // }
-    // printf("counter: %i\n", counter);
-
+    fclose(file);
     return true;
 }
 
