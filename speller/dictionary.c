@@ -7,6 +7,13 @@
 #include <string.h>
 #include "dictionary.h"
 
+typedef struct node
+{
+    bool is_word;
+    struct node *children[27];
+}
+node;
+
 // Returns true if word is in dictionary else false
 // case insensitive
 // strings with alphabetical characters and apostrophes
@@ -45,18 +52,13 @@ bool load(const char *dictionary)
     // create an array to hold the longest word
     char str[45];
 
-    typedef struct node
-    {
-        bool is_word;
-        struct node *children[27];
-    }
-    node;
+
 
     // create the root node
     struct node *root = malloc(sizeof(node));
 
     // create a navigation pointer to remember the location of root as we iterate through the trie
-    // struct node *nav = root;
+    struct node *nav = root;
 
     // read dictionary file until the end is reached
     while (fgets (str, 45, file) != NULL )
@@ -67,26 +69,27 @@ bool load(const char *dictionary)
         {
             if (isalpha(str[i]) != 0)
             {
-                if (root->children[str[i] - 'a'] == NULL)
+                if (nav->children[str[i] - 'a'] == NULL)
                 {
                     struct node *child = malloc(sizeof(node));
-                    root->children[str[i] - 'a'] = child;
+                    nav->children[str[i] - 'a'] = child;
 
                 }
 
             }
             else // character is apostrophe
             {
-                if (root->children[26] == NULL)
+                if (nav->children[26] == NULL)
                 {
                     struct node *child = malloc(sizeof(node));
-                    root->children[26] = child;
+                    nav->children[26] = child;
                     // child->children[26];
                 }
             }
         }
 
         // set boolean to true for end of word
+        // nodename->is_word = true;
 
     }
     // print counter for testing
