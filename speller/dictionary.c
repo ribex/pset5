@@ -55,10 +55,10 @@ bool load(const char *dictionary)
 
 
     // create the root node
-    struct node *root = malloc(sizeof(node));
+    node *root = malloc(sizeof(node));
 
     // create a navigation pointer to remember the location of root as we iterate through the trie
-    struct node *nav = root;
+    node *nav = root;
 
     // read dictionary file until the end is reached
     while (fgets (str, 45, file) != NULL )
@@ -71,7 +71,7 @@ bool load(const char *dictionary)
             {
                 if (nav->children[str[i] - 'a'] == NULL)
                 {
-                    struct node *child = malloc(sizeof(node));
+                    node *child = malloc(sizeof(node));
                     nav->children[str[i] - 'a'] = child;
 
                 }
@@ -81,7 +81,7 @@ bool load(const char *dictionary)
             {
                 if (nav->children[26] == NULL)
                 {
-                    struct node *child = malloc(sizeof(node));
+                    node *child = malloc(sizeof(node));
                     nav->children[26] = child;
                     // child->children[26];
                 }
