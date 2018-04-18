@@ -10,7 +10,7 @@
 typedef struct node
 {
     bool is_word;
-    struct node *children[27];
+    struct node* children[27];
 }
 node;
 
@@ -39,20 +39,12 @@ bool load(const char *dictionary)
         fprintf(stderr, "The file %s cannot be opened for reading.\n", dictionary);
         return 2;
     }
-    // print statement for testing
-    // else
-    // {
-    //     printf("Opened the dictionary.\n");
-    // }
 
-    // printf("the dictionary is %s xxx\n", dictionary);
     // temporary counter for dictionary words
     int counter = 0;
 
     // create an array to hold the longest word
     char str[45];
-
-
 
     // create the root node
     node *root = malloc(sizeof(node));
@@ -69,28 +61,35 @@ bool load(const char *dictionary)
         {
             if (isalpha(str[i]) != 0)
             {
-                if (nav->children[str[i] - 'a'] == NULL)
+                int position = str[i] - 'a';
+                if (nav->children[position] == NULL)
                 {
                     node *child = malloc(sizeof(node));
-                    nav->children[str[i] - 'a'] = child;
-
+                    for (int j = 0; j < 27; j++)
+                    {
+                        child->children[j] = NULL;
+                    }
+                    child->is_word = false;
+                    nav->children[position] = child;
                 }
-
             }
             else // character is apostrophe
             {
                 if (nav->children[26] == NULL)
                 {
                     node *child = malloc(sizeof(node));
+                    for (int j = 0; j < 27; j++)
+                    {
+                        child->children[j] = NULL;
+                    }
+                    child->is_word = false;
                     nav->children[26] = child;
-                    // child->children[26];
                 }
             }
         }
 
         // set boolean to true for end of word
-        // nodename->is_word = true;
-
+        nav->is_word = true;
     }
     // print counter for testing
     printf("counter: %i\n", counter);
@@ -110,5 +109,5 @@ unsigned int size(void)
 bool unload(void)
 {
     // TODO
-    return false;
+    return true;
 }
