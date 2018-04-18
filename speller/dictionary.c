@@ -1,5 +1,4 @@
 // Implements a dictionary's functionality
-
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -14,6 +13,8 @@ typedef struct node
 }
 node;
 
+node *rootofallevil = NULL;
+
 // Returns true if word is in dictionary else false
 // case insensitive
 // strings with alphabetical characters and apostrophes
@@ -21,7 +22,39 @@ bool check(const char *word)
 {
     // TODO
     printf("*check %s*", word);
+
+    int len = strlen(word);
+    // for each letter in input word
+
+    node* checknav = rootofallevil;
+
+    bool wordFlag = false;
+
+    for (int i = 0; i < len; i++)
+    {
+        // go to corresponding element in children
+        if (checknav->children[word[i] - 'a'] == NULL)
+        {
+            wordFlag = true;
+        }
+
+            // if NULL, word is misspelled
+
+            // else, move to next letter
+
+        // once at end of input word
+            // check if is_word is true
+
+
+
+
+    }
     // return true if word is in dictionary, return false otherwise
+
+
+
+
+
     return false;
 }
 
@@ -47,10 +80,10 @@ bool load(const char *dictionary)
     char str[45];
 
     // create the root node
-    node *root = malloc(sizeof(node));
+    rootofallevil = malloc(sizeof(node));
 
     // create a navigation pointer to remember the location of root as we iterate through the trie
-    node *nav = root;
+    node *nav = rootofallevil;
 
     // read dictionary file until the end is reached
     while (fgets (str, 45, file) != NULL )
@@ -92,7 +125,7 @@ bool load(const char *dictionary)
         nav->is_word = true;
     }
     // print counter for testing
-    printf("counter: %i\n", counter);
+    // printf("counter: %i\n", counter);
 
     fclose(file);
     return true;
@@ -108,6 +141,11 @@ unsigned int size(void)
 // Unloads dictionary from memory, returning true if successful else false
 bool unload(void)
 {
-    // TODO
+    // // TODO
+    // for (int i = 0; i < 27; i++)
+    // {
+    //     unload(root->children[i]);
+    // }
+    // unload(root);
     return true;
 }
