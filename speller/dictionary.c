@@ -15,6 +15,9 @@ node;
 
 node *rootOfTrie = NULL;
 
+// counter for dictionary words
+int counter = 0;
+
 // Returns true if word is in dictionary else false
 // case insensitive
 // strings with alphabetical characters and apostrophes
@@ -39,17 +42,6 @@ bool check(const char *word)
         {
             return false;
         }
-
-            // if NULL, word is misspelled
-
-            // else, move to next letter
-
-        // once at end of input word
-            // check if is_word is true
-
-
-
-
     }
 
     // return true if word is in dictionary, return false otherwise
@@ -58,7 +50,6 @@ bool check(const char *word)
         return true;
     }
 
-    printf("returning false: ");
     return false;
 }
 
@@ -76,9 +67,6 @@ bool load(const char *dictionary)
         fprintf(stderr, "The file %s cannot be opened for reading.\n", dictionary);
         return 2;
     }
-
-    // temporary counter for dictionary words
-    int counter = 0;
 
     // create an array to hold the longest word
     char str[45];
@@ -144,8 +132,7 @@ bool load(const char *dictionary)
 // Returns number of words in dictionary if loaded else 0 if not yet loaded
 unsigned int size(void)
 {
-    // TODO
-    return 0;
+    return counter;
 }
 
 // Unloads dictionary from memory, returning true if successful else false
