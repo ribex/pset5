@@ -13,29 +13,31 @@ typedef struct node
 }
 node;
 
-node *rootofallevil = NULL;
+node *rootOfTrie = NULL;
 
 // Returns true if word is in dictionary else false
 // case insensitive
 // strings with alphabetical characters and apostrophes
 bool check(const char *word)
 {
-    // TODO
-    printf("*check %s*", word);
+    node* checknav = rootOfTrie;
 
     int len = strlen(word);
+
+    char wordCopy[len + 1];
+
+ 	for (int i = 0; i < len; i++)
+ 	{
+ 	    wordCopy[i] = tolower(word[i]);
+ 	}
+
     // for each letter in input word
-
-    node* checknav = rootofallevil;
-
-    bool wordFlag = false;
-
-    for (int i = 0; i < len; i++)
+    for (int j = 0; j < len; j++)
     {
         // go to corresponding element in children
-        if (checknav->children[word[i] - 'a'] == NULL)
+        if (checknav->children[wordCopy[j] - 'a'] == NULL)
         {
-            wordFlag = true;
+            return false;
         }
 
             // if NULL, word is misspelled
@@ -49,12 +51,14 @@ bool check(const char *word)
 
 
     }
+
     // return true if word is in dictionary, return false otherwise
+    if (checknav->is_word)
+    {
+        return true;
+    }
 
-
-
-
-
+    printf("returning false: ");
     return false;
 }
 
@@ -80,10 +84,10 @@ bool load(const char *dictionary)
     char str[45];
 
     // create the root node
-    rootofallevil = malloc(sizeof(node));
+    rootOfTrie = malloc(sizeof(node));
 
     // create a navigation pointer to remember the location of root as we iterate through the trie
-    node *nav = rootofallevil;
+    node *nav = rootOfTrie;
 
     // read dictionary file until the end is reached
     while (fgets (str, 45, file) != NULL )
