@@ -86,6 +86,12 @@ bool load(const char *dictionary)
     // create the root node
     rootOfTrie = malloc(sizeof(node));
 
+    for (int i = 0; i < 27; i++)
+    {
+        rootOfTrie->children[i] = NULL;
+    }
+    rootOfTrie->is_word = false;
+
     // create a navigation pointer to remember the location of root as we iterate through the trie
     node *nav = rootOfTrie;
 
