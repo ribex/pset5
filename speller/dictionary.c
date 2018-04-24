@@ -13,6 +13,22 @@ typedef struct node
 }
 node;
 
+struct node *createNode(void)
+{
+    struct node *newNode = NULL;
+    newNode = (struct node *)malloc(sizeof(struct node));
+
+    if (newNode)
+    {
+        for (int i = 0; i < 27; i++)
+        {
+            newNode->children[i] = NULL;
+        }
+        newNode->is_word = false;
+    }
+    return newNode;
+}
+
 node *rootOfTrie = NULL;
 
 // counter for dictionary words
@@ -23,34 +39,39 @@ int counter = 0;
 // strings with alphabetical characters and apostrophes
 bool check(const char *word)
 {
-    node* checknav = rootOfTrie;
-
-    int len = strlen(word);
-
-    char wordCopy[len + 1];
-
- 	for (int i = 0; i < len; i++)
- 	{
- 	    wordCopy[i] = tolower(word[i]);
- 	}
-
-    // for each letter in input word
-    for (int j = 0; j < len; j++)
+    node *checknav = rootOfTrie;
+    checknav->is_word = false;
+    // for each character in input word
+    for (int j = 0, len = strlen(word); j < len; j++)
     {
-        // go to corresponding element in children
-        if (checknav->children[wordCopy[j] - 'a'] == NULL)
+        int position;
+
+        if (word[j] == '\'')
         {
+            printf("CHECK APOSTROPHE");
+            position = 26;
+        }
+        if (isalpha(word[j]))
+        {
+            position = tolower(word[j]) - 'a';
+        }
+
+        if (!checknav->children[position])
+        {
+            // printf("letter but false: %c\n", word[j]);
             return false;
+        }
+        else
+        {
+            // printf("check letter: %c\n", word[j]);
+            checknav = checknav->children[position];
         }
     }
 
     // return true if word is in dictionary, return false otherwise
-    if (checknav->is_word)
-    {
-        return true;
-    }
-
-    return false;
+    // printf("word in dictionary ");
+    // return (checknav != NULL && checknav->is_word);
+    return true;
 }
 
 // Loads dictionary into memory, returning true if successful else false
@@ -68,12 +89,11 @@ bool load(const char *dictionary)
         return 2;
     }
 
-    // create an array to hold the longest word
-    char str[45];
+    // create an array to hold the longest word of 45 characters
+    char str[47];
 
-    // create the root node
+    // initialize the root node
     rootOfTrie = malloc(sizeof(node));
-
     for (int i = 0; i < 27; i++)
     {
         rootOfTrie->children[i] = NULL;
@@ -81,49 +101,40 @@ bool load(const char *dictionary)
     rootOfTrie->is_word = false;
 
     // create a navigation pointer to remember the location of root as we iterate through the trie
-    node *nav = rootOfTrie;
+    node *nav = malloc(sizeof(node));
 
     // read dictionary file until the end is reached
-    while (fgets (str, 45, file) != NULL )
+    while (fgets (str, 47, file) != NULL )
     {
-        counter++;
-
+        nav = rootOfTrie;
+        // printf("loading ");
         for (int i = 0, len = strlen(str); i < len; i++)
         {
-            if (isalpha(str[i]) != 0)
+            int position;
+            if (isalpha(str[i]))
             {
-                int position = str[i] - 'a';
-                if (nav->children[position] == NULL)
-                {
-                    node *child = malloc(sizeof(node));
-                    for (int j = 0; j < 27; j++)
-                    {
-                        child->children[j] = NULL;
-                    }
-                    child->is_word = false;
-                    nav->children[position] = child;
-                }
+                // printf("%c ", str[i]);
+                position = str[i] - 'a';
             }
-            else // character is apostrophe
+            if (str[i] == '\'')
             {
-                if (nav->children[26] == NULL)
-                {
-                    node *child = malloc(sizeof(node));
-                    for (int j = 0; j < 27; j++)
-                    {
-                        child->children[j] = NULL;
-                    }
-                    child->is_word = false;
-                    nav->children[26] = child;
-                }
+                printf("apostrophe ");
+                position = 26;
             }
+
+            if (!nav->children[position])
+            {
+                nav->children[position] = createNode();
+            }
+            nav = nav->children[position];
+
         }
+        counter++;
 
         // set boolean to true for end of word
         nav->is_word = true;
+        // printf("end of word\n");
     }
-    // print counter for testing
-    // printf("counter: %i\n", counter);
 
     fclose(file);
     return true;
@@ -139,10 +150,12 @@ unsigned int size(void)
 bool unload(void)
 {
     // // TODO
-    // for (int i = 0; i < 27; i++)
-    // {
-    //     unload(root->children[i]);
-    // }
-    // unload(root);
+
+
+    for (int i = 0; i < 27; i++)
+    {
+        free(rootOfTrie->children[i]);
+    }
+    free(rootOfTrie);
     return true;
 }
