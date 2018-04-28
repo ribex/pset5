@@ -13,10 +13,10 @@ typedef struct node
 }
 node;
 
-struct node *createNode(void)
+node *createNode(void)
 {
-    struct node *newNode = NULL;
-    newNode = (struct node *)malloc(sizeof(struct node));
+     node *newNode = NULL;
+    newNode = malloc(sizeof(node));
 
     if (newNode)
     {
@@ -40,7 +40,6 @@ int counter = 0;
 bool check(const char *word)
 {
     node *checknav = rootOfTrie;
-    checknav->is_word = false;
     // for each character in input word
     for (int j = 0, len = strlen(word); j < len; j++)
     {
@@ -48,7 +47,6 @@ bool check(const char *word)
 
         if (word[j] == '\'')
         {
-            printf("CHECK APOSTROPHE");
             position = 26;
         }
         if (isalpha(word[j]))
@@ -58,20 +56,16 @@ bool check(const char *word)
 
         if (!checknav->children[position])
         {
-            // printf("letter but false: %c\n", word[j]);
             return false;
         }
         else
         {
-            // printf("check letter: %c\n", word[j]);
             checknav = checknav->children[position];
         }
     }
 
     // return true if word is in dictionary, return false otherwise
-    // printf("word in dictionary ");
-    // return (checknav != NULL && checknav->is_word);
-    return true;
+    return (checknav->is_word);
 }
 
 // Loads dictionary into memory, returning true if successful else false
@@ -90,7 +84,7 @@ bool load(const char *dictionary)
     }
 
     // create an array to hold the longest word of 45 characters
-    char str[47];
+    char str[46];
 
     // initialize the root node
     rootOfTrie = malloc(sizeof(node));
@@ -107,18 +101,17 @@ bool load(const char *dictionary)
     while (fgets (str, 47, file) != NULL )
     {
         nav = rootOfTrie;
-        // printf("loading ");
-        for (int i = 0, len = strlen(str); i < len; i++)
+
+        int i = 0;
+        while (str[i] != 10)
         {
             int position;
             if (isalpha(str[i]))
             {
-                // printf("%c ", str[i]);
                 position = str[i] - 'a';
             }
             if (str[i] == '\'')
             {
-                printf("apostrophe ");
                 position = 26;
             }
 
@@ -127,13 +120,12 @@ bool load(const char *dictionary)
                 nav->children[position] = createNode();
             }
             nav = nav->children[position];
-
+            i++;
         }
         counter++;
 
         // set boolean to true for end of word
         nav->is_word = true;
-        // printf("end of word\n");
     }
 
     fclose(file);
@@ -149,7 +141,7 @@ unsigned int size(void)
 // Unloads dictionary from memory, returning true if successful else false
 bool unload(void)
 {
-    // // TODO
+    // TODO
 
 
     for (int i = 0; i < 27; i++)
