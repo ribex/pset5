@@ -30,6 +30,9 @@ node *createNode(void)
 }
 
 node *rootOfTrie = NULL;
+node *checknav = NULL;
+node *nav = NULL;
+node *ulnav = NULL;
 
 // counter for dictionary words
 int counter = 0;
@@ -39,7 +42,7 @@ int counter = 0;
 // strings with alphabetical characters and apostrophes
 bool check(const char *word)
 {
-    node *checknav = rootOfTrie;
+    checknav = rootOfTrie;
     // for each character in input word
     for (int j = 0, len = strlen(word); j < len; j++)
     {
@@ -95,7 +98,7 @@ bool load(const char *dictionary)
     rootOfTrie->is_word = false;
 
     // create a navigation pointer to remember the location of root as we iterate through the trie
-    node *nav = malloc(sizeof(node));
+    nav = rootOfTrie;
 
     // read dictionary file until the end is reached
     while (fgets (str, 47, file) != NULL )
@@ -127,6 +130,7 @@ bool load(const char *dictionary)
         // set boolean to true for end of word
         nav->is_word = true;
     }
+    // free(nav);
 
     fclose(file);
     return true;
@@ -138,16 +142,41 @@ unsigned int size(void)
     return counter;
 }
 
+void freeNode(node* navigator)
+{
+    for (int i = 0; i < 27; i++)
+    {
+        if (navigator->children[i])
+        {
+            freeNode(navigator->children[i]);
+        }
+    }
+
+    // base case
+    free(navigator);
+}
+
 // Unloads dictionary from memory, returning true if successful else false
 bool unload(void)
 {
-    // TODO
+    // free(nav);
+    // free(checknav);
+
+    ulnav = rootOfTrie;
 
 
-    for (int i = 0; i < 27; i++)
+
+
+    if(rootOfTrie != NULL)
     {
-        free(rootOfTrie->children[i]);
+        ulnav = rootOfTrie;
+        freeNode(ulnav);
+
+        // free(ulnav);
+        return true;
     }
-    free(rootOfTrie);
-    return true;
+    else
+    {
+        return false;
+    }
 }
