@@ -15,7 +15,7 @@ node;
 
 node *createNode(void)
 {
-     node *newNode = NULL;
+    node *newNode = NULL;
     newNode = malloc(sizeof(node));
 
     if (newNode)
@@ -30,9 +30,7 @@ node *createNode(void)
 }
 
 node *rootOfTrie = NULL;
-node *checknav = NULL;
 node *nav = NULL;
-node *ulnav = NULL;
 
 // counter for dictionary words
 int counter = 0;
@@ -42,7 +40,7 @@ int counter = 0;
 // strings with alphabetical characters and apostrophes
 bool check(const char *word)
 {
-    checknav = rootOfTrie;
+    nav = rootOfTrie;
     // for each character in input word
     for (int j = 0, len = strlen(word); j < len; j++)
     {
@@ -57,25 +55,23 @@ bool check(const char *word)
             position = tolower(word[j]) - 'a';
         }
 
-        if (!checknav->children[position])
+        if (!nav->children[position])
         {
             return false;
         }
         else
         {
-            checknav = checknav->children[position];
+            nav = nav->children[position];
         }
     }
 
     // return true if word is in dictionary, return false otherwise
-    return (checknav->is_word);
+    return (nav->is_word);
 }
 
-// Loads dictionary into memory, returning true if successful else false
+// Loads dictionary into memory using a trie, returning true if successful else false
 bool load(const char *dictionary)
 {
-    // strategy: use a trie
-
     // create a reference to the dictionary file
     FILE *file = fopen(dictionary, "r");
 
@@ -130,8 +126,6 @@ bool load(const char *dictionary)
         // set boolean to true for end of word
         nav->is_word = true;
     }
-    // free(nav);
-
     fclose(file);
     return true;
 }
@@ -159,20 +153,12 @@ void freeNode(node* navigator)
 // Unloads dictionary from memory, returning true if successful else false
 bool unload(void)
 {
-    // free(nav);
-    // free(checknav);
-
-    ulnav = rootOfTrie;
-
-
-
+    nav = rootOfTrie;
 
     if(rootOfTrie != NULL)
     {
-        ulnav = rootOfTrie;
-        freeNode(ulnav);
-
-        // free(ulnav);
+        nav = rootOfTrie;
+        freeNode(nav);
         return true;
     }
     else
